@@ -63,4 +63,22 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
             }
         }
     }
+
+    suspend fun refreshWeeklyAsteroids() {
+        withContext(Dispatchers.IO) {
+            try {
+                val today = LocalDate.now()
+                val tomorrow = today.plusDays(1)
+                val feedResult = AsteroidApi.retrofitService.getFeed(
+                    tomorrow.toString(),
+                    Constants.API_KEY
+                )
+                    .await()
+                val parsedFeedResult = parseAsteroidsJsonResult(JSONObject(feedResult))
+                database.asteroidDatabaseDao.insert(*NearEarthObjects(parsedFeedResult).asDatabaseModel())
+            } catch (ex: UnknownHostException) {
+                Log.e("AsteroidRepository", "no network error")
+            }
+        }
+    }
 }
