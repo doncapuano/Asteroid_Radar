@@ -13,8 +13,8 @@ interface AsteroidDatabaseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg asteroidEntity: AsteroidEntity)
 
-    @Query("SELECT * FROM saved_asteroids_table ORDER BY close_approach_date ASC")
-    fun getAllAsteroids(): LiveData<List<AsteroidEntity>>
+    @Query("SELECT * FROM saved_asteroids_table WHERE close_approach_date >= :key ORDER BY close_approach_date ASC")
+    fun getAllAsteroids(key: String): LiveData<List<AsteroidEntity>>
 
     @Query("SELECT * FROM saved_asteroids_table WHERE close_approach_date = :key")
     fun getTodayAsteroids(key: String): LiveData<List<AsteroidEntity>>

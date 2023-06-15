@@ -23,7 +23,7 @@ import java.time.LocalDate
 class AsteroidRepository(private val database: AsteroidDatabase) {
 
     val asteroidFeed: LiveData<List<Asteroid>> = Transformations.map(
-        database.asteroidDatabaseDao.getAllAsteroids()
+        database.asteroidDatabaseDao.getAllAsteroids(LocalDate.now().toString())
     ) {
         it.asDomainModel()
     }
